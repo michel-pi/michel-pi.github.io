@@ -69,9 +69,6 @@ author:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
       url: "https://twitter.com/michel_pi_dev"
-    - label: "Discord: michel-pi#0001"
-      icon: "fab fa-fw fa-discord"
-      url: "#"
 
 footer:
   links:
@@ -89,9 +86,9 @@ defaults:
       type: posts
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: true
-      comments: true
+      comments: false
       share: true
       related: true
   # _pages
@@ -100,7 +97,8 @@ defaults:
       type: pages
     values:
       layout: single
-      author_profile: true
+      author_profile: false
+      share: true
 
 category_archive:
   type: liquid
