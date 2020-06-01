@@ -1,7 +1,5 @@
 ---
 title: "Prevent and understand managed hooking with Harmony"
-toc: true
-toc_sticky: false
 categories:
 	- C#
 	- Hooking
