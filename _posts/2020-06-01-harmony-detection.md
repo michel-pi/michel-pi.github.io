@@ -23,11 +23,13 @@ Hooking is a widely known technique which can be used for countless different pu
 But how many people know that you can patch any .Net method at runtime and hook them to modify parameters, return values or even supress calls?
 
 Hooking can be used to bypass DRM and other licensing methods within every .Net assembly.
+
 Web requests can be sniffed and modified regardless of SSL encryption.
 And thats just what came into my head when i first thought about it.
 
-In order to prevent people analysing or modifying our application we need to know how armony and the underlying MonoMod Framework work.
-With the gained knowledge we will try to address several ways on how to detect the presence of a hooked (or patched) method at runtime.
+In order to prevent people analysing or modifying our application we need to know how Harmony and the underlying MonoMod Framework work.
+
+With the gained knowledge we will try to address multiple ways on how to detect the presence of a hooked (or patched) method at runtime.
 
 ### What is Harmony
 
@@ -37,8 +39,8 @@ It is based upon the MonoMod Framework which basically is the "swiss army knife"
 
 You can read more about those libraries her:
 
-- [Harmony]("https://github.com/pardeike/Harmony")
-- [MonoMod]("https://github.com/MonoMod/MonoMod")
+- [Harmony](https://github.com/pardeike/Harmony)
+- [MonoMod](https://github.com/MonoMod/MonoMod)
 
 ### How does it work
 
@@ -59,15 +61,15 @@ To detect a hooked method we would first need to optain a pointer to the compile
 
 Most of us probably know the highly useful `Marshal` class when you have dealt with unmanaged code or structures already.
 
-It contains the [Marshal.GetFunctionPointerForDelegate]("https://docs.microsoft.com/de-de/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netcore-3.1") method which **converts** a given delegate to a function pointer.
+It contains the [Marshal.GetFunctionPointerForDelegate](https://docs.microsoft.com/de-de/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netcore-3.1) method which **converts** a given delegate to a function pointer.
 
 When you read the above documentation it may be clear that a conversion is not what we want.
-The returned function pointer isn't of any use for us because it is a pointer to a P/Invoke wrapper for the given delegate which can be used with platform interop.
+The returned function pointer isn't of any use for us because it is a pointer to a *P/Invoke* wrapper for the given delegate which can be used with platform interop.
 
 What we need is a pointer to the compiled managed method.
 We want to use the same pointer `MonoMod` used to patch the method.
 
-To get what we need we can use the [RuntimeMethodHandle.GetFunctionPointer]("https://docs.microsoft.com/en-us/dotnet/api/system.runtimemethodhandle.getfunctionpointer?view=netcore-3.1") method.
+To get what we need we can use the [RuntimeMethodHandle.GetFunctionPointer](https://docs.microsoft.com/en-us/dotnet/api/system.runtimemethodhandle.getfunctionpointer?view=netcore-3.1) method.
 
 ```cs
 private static IntPtr GetMethodStart<T>(T target) where T : Delegate
@@ -156,8 +158,7 @@ To do so we simply need to copy the first bytes of the given method and check th
 
 This is pretty straightforward so i only leave the code here for you.
 
-> This will also return true when the app is started within visual studio!
-{: .notice--danger}
+> This will also return true when the app is started within visual studio!{: .notice--danger}
 
 ```cs
 public static bool IsPatched<T>(T target) where T : Delegate
@@ -186,21 +187,27 @@ I came up with the following lists of strings which were the most obvious candid
 
 #### Module names
 
-- 0Harmony
-- HarmonySharedState
-- MonoMod.Utils.Cil.ILGeneratorProxy
-- MonoMod.RuntimeDetour
+```txt
+0Harmony
+HarmonySharedState
+MonoMod.Utils.Cil.ILGeneratorProxy
+MonoMod.RuntimeDetour
+```
 
 #### Namespaces
 
-- HarmonyLib
-- MonoMod
+```txt
+HarmonyLib
+MonoMod
+```
 
 #### Types
 
-- MethodPatcher
-- NativeDetourData
-- ILGeneratorProxy
+```txt
+MethodPatcher
+NativeDetourData
+ILGeneratorProxy
+```
 
 They can be detected by using the `Assembly` type and the `Reflection` namespace but that is up to you.
 
@@ -214,7 +221,7 @@ If you are paranoid you may want to search all variables for string starting wit
 
 Since retrieving all environment variables at once isn't quite easy for most people i'll leave it here for you to use!
 
-[EnvironmentEx.cs]("https://gist.github.com/michel-pi/af478c482404b1ae45ab275a238582ca")
+[EnvironmentEx.cs](https://gist.github.com/michel-pi/af478c482404b1ae45ab275a238582ca)
 
 ---
 
