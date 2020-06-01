@@ -1,11 +1,11 @@
 ---
 title: "Prevent and understand managed hooking with Harmony"
 categories:
-	- C#
+	- "C#"
 	- Hooking
 	- Anti-RE
 tags:
-	- c#
+	- "c#"
 	- hooking
 	- managed
 	- harmony
