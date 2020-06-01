@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Michel-Pi
-email: github@michel-pi.de
+email: "github@michel-pi.de"
 description: >- # this means to ignore newlines until "baseurl:"
   Blog of github.com/michel-pi
 twitter_username: michel_pi_dev
