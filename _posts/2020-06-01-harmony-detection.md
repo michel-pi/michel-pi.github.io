@@ -158,8 +158,9 @@ To do so we simply need to copy the first bytes of the given method and check th
 
 This is pretty straightforward so i only leave the code here for you.
 
-{: .notice--danger}
-> This will also return true when the app is started within visual studio!
+<div class="notice--danger">
+This will also return true when the app is started within visual studio!
+</div>
 
 ```cs
 public static bool IsPatched<T>(T target) where T : Delegate
