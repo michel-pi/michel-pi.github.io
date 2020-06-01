@@ -1,6 +1,5 @@
 ---
 title: "Prevent and understand managed hooking with Harmony"
-toc: true
 categories:
   - "C#"
   - Hooking
@@ -14,6 +13,8 @@ tags:
   - anti-re
   - patching
 ---
+
+A quick writeup on how to detect managed hooking and patching done with harmony.
 
 ## Introduction
 
