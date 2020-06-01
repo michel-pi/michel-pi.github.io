@@ -158,9 +158,7 @@ To do so we simply need to copy the first bytes of the given method and check th
 
 This is pretty straightforward so i only leave the code here for you.
 
-<div class="notice--danger">
-This will also return true when the app is started within visual studio!
-</div>
+> This will also return true when the app is started within visual studio!
 
 ```cs
 public static bool IsPatched<T>(T target) where T : Delegate
@@ -189,7 +187,7 @@ I came up with the following lists of strings which were the most obvious candid
 
 #### Module names
 
-```txt
+```
 0Harmony
 HarmonySharedState
 MonoMod.Utils.Cil.ILGeneratorProxy
@@ -198,14 +196,14 @@ MonoMod.RuntimeDetour
 
 #### Namespaces
 
-```txt
+```
 HarmonyLib
 MonoMod
 ```
 
 #### Types
 
-```txt
+```
 MethodPatcher
 NativeDetourData
 ILGeneratorProxy
