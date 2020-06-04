@@ -1,11 +1,11 @@
 ---
-title: "Prevent and understand managed hooking with Harmony"
+title: "Prevent and understand hooking with Harmony and MonoMod"
 categories:
-  - "C#"
-  - Hooking
-  - Anti-RE
+  - csharp
+  - anti-re
+  - hooking
 tags:
-  - "c#"
+  - csharp
   - hooking
   - managed
   - harmony
@@ -14,7 +14,7 @@ tags:
   - patching
 ---
 
-A quick writeup on how to detect managed hooking and patching done with harmony.
+A quick writeup on how to detect hooking and patching done with Harmony and MonoMod.
 
 ## Introduction
 
@@ -22,10 +22,9 @@ Hooking is a widely known technique which can be used for countless different pu
 
 But how many people know that you can patch any .Net method at runtime and hook them to modify parameters, return values or even supress calls?
 
-Hooking can be used to bypass DRM and other licensing methods within every .Net assembly.
+This can not only be used to bypass DRM and licensing methods but also to view encrypted https traffic within your app.
 
-Web requests can be sniffed and modified regardless of SSL encryption.
-And thats just what came into my head when i first thought about it.
+And thats just what came into my head when i first thought about possible use cases.
 
 In order to prevent people analysing or modifying our application we need to know how Harmony and the underlying MonoMod Framework work.
 
@@ -44,12 +43,11 @@ You can read more about those libraries her:
 
 ### How does it work
 
-Basically, harmony takes any method and copies all the opcodes into a new dynamicly created method which will then be used as the new "original" method.
+Basically, harmony takes any method and copies all the opcodes into a new dynamicly created method to create a backup of it.
 
-This is done because the inital method will no longer be usable after the patching is done.
-The first bytes of the initial method will be overriden with a jump to a newly created wrapper.
+This is done because **MonoMod** will override the first bytes of the compiled original method with a jump to a newly created wrapper method.
 
-The wrapper method will then call a `prefix` method right before the original method will be called and a `postfix` method right after.
+The wrapper method will then call a `prefix` method right before the *copied original* method will be called and a `postfix` method right after.
 
 The `prefix` and `postfix` methods are the ones implemented by the user of the library which of course can alter and use the parameters and return values provided to the initial value.
 
@@ -71,6 +69,8 @@ We want to use the same pointer `MonoMod` used to patch the method.
 
 To get what we need we can use the [RuntimeMethodHandle.GetFunctionPointer](https://docs.microsoft.com/en-us/dotnet/api/system.runtimemethodhandle.getfunctionpointer?view=netcore-3.1) method.
 
+> A generic method with the delegate constraint allows us to pass any method as a parameter to our function!
+
 ```cs
 private static IntPtr GetMethodStart<T>(T target) where T : Delegate
 {
@@ -86,9 +86,9 @@ private static IntPtr GetMethodStart<T>(T target) where T : Delegate
 
 MonoMod handles some other cases within their `GetMethodStart` function which i do not want to explain in this post.
 
-To implement the same behavior we need to use the `Ldftn` IL-opcode on some methods.
+To implement the same behavior we need to use the [Ldftn](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.ldftn?view=netcore-3.1) IL-opcode on some methods.
 
-I used a simple cache and a `DynamicMethod` to retreive the function pointer on those special ones.
+I used a simple cache and a [DynamicMethod](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.dynamicmethod?view=netcore-3.1) to retreive the function pointer on those special ones.
 
 ```cs
 using System;
@@ -181,7 +181,7 @@ public static bool IsPatched<T>(T target) where T : Delegate
 
 ### Detecting strings
 
-Another simple approach to detect the usage of MonoMod or Harmony is to detect text within the loaded modules in our application.
+Another simple approach to detect the usage of MonoMod or Harmony is to search the text (strings) within loaded modules in our application.
 
 I came up with the following lists of strings which were the most obvious candidates for me.
 
@@ -209,7 +209,7 @@ NativeDetourData
 ILGeneratorProxy
 ```
 
-They can be detected by using the `Assembly` type and the `Reflection` namespace but that is up to you.
+They can be detected by using the [Assembly](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly?view=netcore-3.1) type and the [Reflection](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/reflection) namespace but that is up to you.
 
 #### Environment Variables
 
@@ -219,7 +219,7 @@ The presence may not be enough to be sure it is actually used within the applica
 
 If you are paranoid you may want to search all variables for string starting with `MONOMOD`.
 
-Since retrieving all environment variables at once isn't quite easy for most people i'll leave it here for you to use!
+Since retrieving all environment variables at once isn't really straightforward i'll leave it here for you to use!
 
 [EnvironmentEx.cs](https://gist.github.com/michel-pi/af478c482404b1ae45ab275a238582ca)
 
