@@ -1,5 +1,5 @@
 ---
-title: "Prevent and understand hooking with Harmony and MonoMod"
+title: 'Prevent and understand hooking with Harmony and MonoMod'
 categories:
   - csharp
   - anti-re
